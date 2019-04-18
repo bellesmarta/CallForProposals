@@ -1,0 +1,306 @@
+%% PROPOSAL: Generation of elliptic curves for circuit use.
+%% Marta, Barry and Jordi.
+%% The 2nd ZKProof Workshop 2019.
+
+\documentclass{article}
+
+% Packages
+	\usepackage[colorlinks=true,
+				urlcolor=black,
+				linkcolor=black,
+				citecolor=black
+				]{hyperref} 
+	
+	\usepackage[english]{babel}
+	\usepackage[utf8]{inputenc}
+	\usepackage{amsmath, amsthm, amssymb, mathtools}
+	\usepackage{enumerate, enumitem}
+	\usepackage{graphicx, color, xcolor}
+	\usepackage{setspace}
+	\usepackage{authblk}
+	\usepackage{braket}
+	
+	\usepackage{algorithm}
+	\usepackage[noend]{algpseudocode}
+	\makeatletter
+	\def\BState{\State\hskip-\ALG@thistlm}
+	\makeatother
+	
+	\usepackage{listings}
+	\lstdefinelanguage{Sage}[]{Python}
+	{morekeywords={False,sage,True},sensitive=true}
+	\lstset{frame=none,
+			showtabs=False,
+			showspaces=False,
+			showstringspaces=False,
+			commentstyle={\ttfamily\color{dgreencolor}},
+			keywordstyle={\ttfamily\color{dbluecolor}\bfseries},
+			stringstyle={\ttfamily\color{dgraycolor}\bfseries},
+			language=Sage,
+			basicstyle={\fontsize{10pt}{10pt}\ttfamily},
+			aboveskip=0.3em,
+			belowskip=0.1em,
+			numbers=none,%left,
+			numberstyle=\footnotesize
+			}
+		
+	\definecolor{dblackcolor}{rgb}{0.0,0.0,0.0}
+	\definecolor{dbluecolor}{rgb}{0.01,0.02,0.7}
+	\definecolor{dgreencolor}{rgb}{0.2,0.4,0.0}
+	\definecolor{dgraycolor}{rgb}{0.30,0.3,0.30}
+	\newcommand{\dblue}{\color{dbluecolor}\bf}
+	\newcommand{\dred}{\color{dredcolor}\bf}
+	\newcommand{\dblack}{\color{dblackcolor}\bf}
+
+% Commands	
+	\newcommand{\N}{\ensuremath{\mathbb{N}}}
+	\newcommand{\Np}{\ensuremath{\mathbb{N}^{+}}}
+	\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+	\newcommand{\Q}{\ensuremath{\mathbb{Q}}}
+	\newcommand{\R}{\ensuremath{\mathbb{R}}}
+	\newcommand{\C}{\ensuremath{\mathbb{C}}}
+	\newcommand{\Fp}{\ensuremath{\mathbb{F}_p}}
+	\newcommand{\Fr}{\ensuremath{\mathbb{F}_r}}
+	\newcommand{\G}{\ensuremath{\mathbb{G}}}
+	\newcommand{\point}[1]{P_{#1} = (x_{#1}, y_{#1})}
+	\newcommand{\llog}{\log_2}
+	\newcommand{\xor}{\oplus}
+	\newcommand{\minSize}{1.5em}
+	\newcommand{\gen}[1]{\ensuremath{\langle #1\rangle}}
+	\newcommand{\noi}{\noindent}
+	\newcommand{\red}[1]{\textcolor{red}{#1}}
+	\newcommand{\blue}[1]{\textcolor{blue}{#1}}
+
+% Margins
+	\textwidth 16 cm
+	\textheight 23.5 cm
+	\topmargin -1.5 cm
+	\oddsidemargin -0 cm
+	
+	\addtolength{\skip\footins}{1pc plus 5pt} % Foot note space
+	\setlength\parindent{0pt} % No indent
+
+% Title
+	\makeatletter
+	\renewcommand\AB@affilsepx{, \protect\Affilfont}
+	\makeatother
+
+	\title{Generation of (Twisted Edwards) elliptic curves for circuit use 
+			\vspace{-0.2cm} }
+	\author[1]{Barry WhiteHat}
+	\author[2]{Jordi Baylina}
+	\author[2,3]{Marta Bellés}
+	\affil[1]{Ethereum foundation}
+	\affil[2]{iden3}
+	\affil[3]{Universitat Pompeu Fabra}
+	\setcounter{Maxaffil}{0}
+	\renewcommand\Affilfont{\itshape\small}
+
+\begin{document}
+\begin{spacing}{1.2}	
+
+\maketitle  	  \vspace{1.5cm}
+\tableofcontents  \vspace{0.5cm}
+
+
+\newpage
+
+%%
+\section{Scope, motivation and background}
+	
+	Motivation:
+	\begin{itemize}
+		\item 	Protocols like zk-SNARK require the usage of pairing-friendly elliptic curves (references to SNARK, pairing-friendly elliptic curves and BN, BL).
+		\item 	What happens if inside the circuit we need to implement protocols that use elliptic curves, such as Pedersen Hash and EdDSA. 
+		\item 	Inside the SNARK, we have elements of a certain field $\Fp$ (which is the order of the pairing-friendly curve, is at always of prime order?)
+		\item 	So, we have to find what we call an {\it embedded curve} defined over $\Fp$.
+	\end{itemize}
+	
+	Aim:
+	\begin{itemize}
+		\item 	This proposal aims to define a deterministic algorithm for generating elliptic curves defined over a given prime field. 
+				That is, given a prime $p$, generate an elliptic curve defined over $\Fp$.
+		\item 	It is important the ability to find it in a deterministic way---so that it was clear no other considerations were taken for defining---is 
+				paramount as it significantly reduces the possibility of a backdoor being present, thus leading to better security.
+		\item 	Also: provide an algorithm for checking its safety against best known attacks. 
+		\item 	We present an example of a generated curve done this way: Baby Jubjub. Also include the arithmetic implementation of it. 
+	\end{itemize}
+
+	Background:
+	\begin{itemize}
+		\item Elliptic curve? Pairing-friendly (BN, BL)? Twisted Edwards / Montgomery elliptic curve? (Add REF).
+		\item Order of the elliptic curve? Large prime dividing the order?
+		\item Safety criteria: add attacks? (Add REF?)
+	\end{itemize}
+	
+	Terminology:
+	\begin{itemize}
+		\item {\it Embedded elliptic curve}: given an elliptic curve $E$ of prime order $p$, an elliptic curve $E'$ defined over $\Fp$ is called an embedded elliptic curve of $E$. 
+	\end{itemize}
+
+	Notation:
+	\begin {table}[h!]
+		\centering
+		\begin{tabular}{|c|l|}
+			\hline
+			{\bf Notation} 	& {\bf Description} \\ 
+			\hline
+			{$E$} 			& Twisted Edwards elliptic curve.\\ 
+			\hline		
+			{$p$} 			& Prime number. Characteristic of the field $E$ is defined over.\\ 
+			\hline
+			\begin{tabular}{@{}c@{}}	{$a$}  \\ {$d$} \end{tabular}
+				  			& Parameters of the equation $ax^2 + y^2 = 1 +  d x^2 y^2$.\\ \hline
+			{$n$} 			& Order of the curve. Typically, $n = h\times l$. \\ 
+			\hline
+			{$l$} 			& Large prime dividing the order of the curve.\\ 
+			\hline
+			{$h$} 			& Cofactor.\\ 
+			\hline
+			{$x_0, y_0$} 	& Generator of the curve.\\ 
+			\hline
+			{$x_1, y_1$} 	& Generator of the large prime subgroup of the curve.\\ 
+			\hline
+		\end{tabular}
+		\label{tab:notation}
+	\end{table}
+
+%%
+\section{Generation of embedded elliptic curves}
+	Definition of the curve:
+	\begin{itemize}
+		\item Finite field (defined by $p$).
+		\item Order of the curve and its prime decomposition* (in case of TEd/Mont: cofactor and large prime).
+		\item Generator and base point.
+	\end{itemize}
+	
+	%%
+	\subsection{Twisted Edwards and Montgomery}
+		%TODO: Write and justify the assumptions.
+				
+		In 2016, a group of researchers of IRPF designed a deterministic algorithm that, given a prime number $p$, it returns the elliptic curve defined over $\Fp$ with smallest coefficient $A$ such that $A-2$ is a multiple of 4 and equation $y^2 = x^3 + Ax^2 + x$ describes a Montgomery curve. 
+		The assumption $A-2$ divisible by 4 comes from the fact that as this value is used in many operations, so trying to keep it smaller and divisible by four is a reasonable assumption \cite{generation-baby}.
+		
+		\subsubsection{Generation of elliptic curves given $p$ with $p\equiv1\mod4$}
+		\input{gen-curves}\vspace{0.5cm}
+				
+		\subsubsection{Generation of elliptic curves given $p$ with $p\equiv3\mod4$}
+		%TODO
+		
+	%%	
+	\subsection{Elliptic curves of prime order}
+		% TODO
+	
+	%%
+	\subsection{Pairing friendly elliptic curves}
+		% TODO
+
+%%
+\section{Safety criteria}
+	% TODO
+	SafeCurves is a project that checks some of the most common and known attacks on several elliptic curves. It also provides the algorithm it was used \cite{safe-curves}.
+
+%%
+\section{Example: embedded curve of BN128 generation of Baby Jubjub}
+	
+	%%
+	\subsection{Generation Of Baby Jubjub}
+		We considered the large prime number dividing the order of BN128 and run algorithm A.1 from \cite{generation-baby}. The first elliptic curve it was returned  satisfying SafeCurves criteria was the Montgomery curve with coefficient $A = 168698$. We named this curve Baby Jubjub elliptic curve. 
+
+		\subsubsection{Code}
+		\input{gen-curves-bjj}\vspace{0.5cm}
+
+	%%
+	\subsection{Definition Of Baby Jubjub}
+		From now on, let 
+			$$	p = 21888242871839275222246405745257275088548364
+					400416034343698204186575808495617 $$
+		and $\Fp$ the finite field with $p$ elements. 
+		
+		%%
+		\subsubsection{Montgomery Form}
+			We define $E_M$ as the {\it Baby-Jubjub} Montgomery elliptic curve defined over $\Fp$ given %described
+			by equation
+			$$	E: v^2 = u^3 +  168698u^2 + u. $$
+			The order of $E_M$ is $n = 8\times l$, where 
+			$$	l = 2736030358979909402780800718157159386076813972
+			158567259200215660948447373041 $$ 
+			is a prime number. Denote by $\G$ the subgroup of points of order $r$, that is, %of $E$ 
+			$$\G = \Set{ P \in E(\Fp) | l P = O  }.$$
+
+		%%
+		\subsubsection{Edwards Form}
+			$E_M$ is birationally equivalent to the Edwards elliptic curve %[REF] defined by  
+				$$	E: x^2 + y^2 = 1 +  d x^2 y^2 $$
+			where
+			$ d = 9706598848417545097372247223557719406784115219466060233080913168975159366771.$ \\
+			
+			The birational equivalence \cite[Thm. 3.2]{twisted} from $E$ to $E_M$ is the map
+			% These results are from \cite[Theorem 3.2]{twisted}. 
+			$$ (x,y) \to (u,v) = \left( \frac{1 + y}{1 - y} , \frac{1 + y}{(1 - y)x} \right) $$
+			with inverse from $E_M$ to $E$
+			$$ (u, v) \to (x, y) = \left(  \frac{u}{v}, \frac{u - 1}{u + 1}   \right). $$
+
+		%%
+		\subsubsection{Parameters}
+			\begin {table}[h!]
+				\centering
+				\begin{tabular}{|c|l|}
+					\hline
+					{\bf Notation} & {\bf Value}\\
+					\hline
+					{$p$} 	&	21888242871839275222246405745257275088548364400416034343698204186575808495617 \\
+					\hline
+					{$a$} 	& -1 \\
+					\hline
+					{$d$} 	& 12181644023421730124874158521699555681764249180949974110617291017600649128846 \\
+					\hline
+					{$n$} 	& 21888242871839275222246405745257275088614511777268538073601725287587578984328 \\
+					\hline
+					{$l$} 	& 2736030358979909402780800718157159386076813972158567259200215660948447373041 \\
+					\hline
+					{$h$} 	& 8 \\
+					\hline
+					{$x_0$} & 995203441582195749578291179787384436505546430278305826713579947235728471134 \\
+					\hline
+					{$y_0$} & 5472060717959818805561601436314318772137091100104008585924551046643952123905 \\
+					\hline
+					{$x_1$} & 5299619240641551281634865583518297030282874472190772894086521144482721001553 \\
+					\hline
+					{$y_1$} & 16950150798460657717958625567821834550301663161624707787222815936182638968203 \\
+					\hline
+				\end{tabular}
+				\label{tab:baby-jubjub}
+			\end{table}
+	
+	\subsection{Arithmetic In Baby Jubjub}
+		In this section we define how to operate in the elliptic curve group: %two operations supported in the elliptic curve group: 
+		the addition of points and multiplication of a point by a scalar (an element of $\Fp$).
+		 	\subsubsection{Addition Of Points} \input{addition}
+		 	\subsubsection{Multiplication Of A Point Of $E$ By A Scalar} \input{multiplication}
+
+\section{Challenges And Security}
+	As required in the construction of Baby-Jubjub, the curve satisfies SafeCurves criteria. This can be checked following \cite{github-barry}.
+	
+\section{Implementation}	
+	Barry WhiteHat:	
+	\begin{itemize}
+		\item %Description, generation and cryptographic requirements:
+		\url{https://github.com/barryWhiteHat/baby_jubjub}
+		\item %Arithmetic:
+		\url{https://github.com/barryWhiteHat/baby_jubjub_ecc} 
+	\end{itemize}
+	Jordi Baylina: \url{https://github.com/iden3/circomlib/blob/master/src/babyjub.js}
+
+%%	
+\section {Intellectual Property}
+
+	We will release the final version of this proposal under creative commons, to ensure it is freely available to everyone.
+
+
+%% References
+\addcontentsline{toc}{section}{References}
+	\bibliographystyle{acm}
+	\bibliography{lit}
+\end{spacing}	
+\end{document}
