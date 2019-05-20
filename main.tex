@@ -176,29 +176,29 @@
 	
 	%%
 	\subsection{Twisted Edwards and Montgomery}
-		%TODO: Write and justify the assumptions.
+	%TODO: Write and justify the assumptions.
 				
 		In 2016, a group of researchers of IRPF designed a deterministic algorithm that, given a prime number $p$, it returns the elliptic curve defined over $\Fp$ with smallest coefficient $A$ such that $A-2$ is a multiple of 4 and equation $y^2 = x^3 + Ax^2 + x$ describes a Montgomery curve. 
 		The assumption $A-2$ divisible by 4 comes from the fact that as this value is used in many operations, so trying to keep it smaller and divisible by four is a reasonable assumption \cite{generation-baby}.
 		
-		\subsubsection{Generation of elliptic curves given $p$ with $p\equiv1\mod4$}
-		\input{gen-curves}\vspace{0.5cm}
+		\subsubsection{Generation of elliptic curves given $p$ with $p\equiv1\mod4$} \input{gen-curves}\vspace{0.5cm}
 				
 		\subsubsection{Generation of elliptic curves given $p$ with $p\equiv3\mod4$}
-		%TODO
+		%TODO: Add text
 		
-	%%	
+	%% 
+	%TODO
 	\subsection{Elliptic curves of prime order}
-		% TODO
-	
-	%%
-	\subsection{Pairing friendly elliptic curves}
-		% TODO
+	\subsection{Pairing-friendly elliptic curves}
 
 %%
 \section{Safety criteria}
 	% TODO
 	SafeCurves is a project that checks some of the most common and known attacks on several elliptic curves. It also provides the algorithm it was used \cite{safe-curves}.
+	
+	\begin{itemize}
+		\item 
+	\end{itemize}
 
 %%
 \section{Example: embedded curve of BN128 generation of Baby Jubjub}

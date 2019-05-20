@@ -1,0 +1,45 @@
+\begin{lstlisting}
+prime = 21888242871839275222246405745257275088548364400416034343698204186575808495617
+Fr = GF(prime)
+h = 8 # cofactor
+
+A = int(sys.argv[1])
+A, EC = find1Mod4(prime, h, 4, A)
+
+B = 1
+a = Fr((A + 2) / B)
+d = Fr((A - 2) / B)
+
+print "a " , a , "d " , d , sqrt(d)
+# check we have a safe twist
+assert(not d.is_square())
+assert(a*d*(a-d)!=0)
+
+s = factor(EC.order())
+print ("l : " , s)
+N = h * s # order of the curve
+print (factor(EC.quadratic_twist().order()))
+
+# get generator point
+u_gen, v_gen, w_gen = findGenPoint(prime, A, EC, N)
+# find that generator point on the edwards curve
+gen_x, gen_y = mont_to_ted(u_gen, v_gen, prime)
+# make sure the generator point is on the twisted edwards curve
+assert(isOnEd(gen_x, gen_y, prime, a , d))
+# go back to montgomery
+u , v = ted_to_mont(gen_x, gen_y, prime)
+# confirm we are back where we started from
+assert (u == u_gen)
+assert (v == v_gen)
+
+# get base point on montgomery curve by multiplying the generator point by h
+base_x , base_y, base_z = h*EC(u_gen, v_gen)
+# find the same points on twisted edwards curve
+base_x , base_y = mont_to_ted(base_x , base_y, prime)
+
+# the generator is on the twisted edwards curve
+assert(isOnEd(base_x,base_y, prime , a , d))
+
+print ("generator :" , gen_x, gen_y)
+print ("base :", base_x, base_y)
+\end{lstlisting}
