@@ -1,2 +1,2 @@
 # CallForProposals
-Generation of Elliptic Curves for circuit use
+Generation of Twisted Edwards Elliptic Curves for Circuit Use.

@@ -1,12 +1,35 @@
-@MISC{github-barry,
-	author = {Barry White Hat},
+@MISC{github:barry:babyjubjub,
+	author = {Barry WhiteHat},
 	title = {Baby-Jubjub supporting evidence},
 	howpublished = {GitHub},
 	year = {October 19, 2018},
 	note = {\url{https://github.com/barryWhiteHat/baby_jubjub}},
 }
 
-@MISC{twisted,
+@unpublished {github:zcash:sapling,
+	AUTHOR = {Daira Hopwood and Sean Bowe and Taylor Hornby and Nathan Wilcox},
+	TITLE = {ZCash protocol specification Version 2019.0.0 [Overwinter+Sapling]},
+	NOTE = {\url{https://github.com/zcash/zips/blob/master/protocol/protocol.pdf}},
+	PUBLISHER = {Technical report, Zero Coin Electric Coin Company},
+	YEAR = {May 1, 2019},
+}
+
+@unpublished {github:zkcrypto:derive,
+	AUTHOR = {Sean Bowe},
+	TITLE = {Derivation of Jubjub elliptic curve},
+	NOTE = {\url{https://github.com/zkcrypto/jubjub/blob/master/doc/derive/derive.sage}},
+	YEAR = {May 10, 2019},
+}
+
+@unpublished {github:daira:safe,
+	AUTHOR = {Daira Hopwood},
+	TITLE = {Supporting evidence for security of the Jubjub curve to be used in Zcash
+	},
+	NOTE = {\url{https://github.com/daira/jubjub/blob/master/verify.sage}},
+	YEAR = {November 2, 2017},
+}
+
+@MISC{cryptoeprint:2008:013,
 	author = {Daniel J. Bernstein and Peter Birkner and Marc Joye and Tanja Lange and Christiane Peters},
 	title = {Twisted Edwards Curves},
 	howpublished = {Cryptology ePrint Archive, Report 2008/013},
@@ -14,7 +37,7 @@
 	note = {\url{https://eprint.iacr.org/2008/013}},
 }
 
-@inproceedings{montgomery,
+@inproceedings{Okeya:2000:ECM:648117.746614,
 	author = {Katsuyuki Okeya and Hiroyuki Kurumatani and Kouichi Sakurai},
 	title = {Elliptic Curves with the Montgomery-Form and Their Cryptographic Applications},
 	booktitle = {Proceedings of the Third International Workshop on Practice and Theory in Public Key Cryptography: Public Key Cryptography},
@@ -29,8 +52,6 @@
 	address = {London, UK, UK},
 } 
 
-
-
 @book {lagrange,
 	AUTHOR = {Benjamin Baumslag and Bruce Chandler},
     TITLE = {Schaum's outline of Theory and Problems of Group Theory},
@@ -43,19 +64,11 @@
 	NOTE = {\url{http://poincare.matf.bg.ac.rs/~zarkom/Book_Shaums_Group_theory.pdf}},
 }
 
-@unpublished {sapling,
-   	AUTHOR = {Daira Hopwood and Sean Bowe and Taylor Hornby and Nathan Wilcox},
-	TITLE = {ZCash protocol specification Version 2018.0-beta-31},
-	NOTE = {\url{https://github.com/zcash/zips/blob/master/protocol/sapling.pdf}},
-   	YEAR = {November 14, 2018},
-}    
-
-
 @unpublished {safe-curves,
 	AUTHOR = {Daniel J. Bernstein and Tanja Lange},
 	TITLE = {SafeCurves: choosing safe curves for elliptic-curve cryptography},
 	NOTE = {\url{https://safecurves.cr.yp.to}},
-	YEAR = {Accessed February 25, 2018},
+	YEAR = {Accessed February 25, 2019},
 }    
   
 @misc{generation-baby,
@@ -70,4 +83,109 @@
 	pagetotal =	22,
 	year =		{January, 2016},
 }
- 
+
+@book{washington,
+	author ={Lawrence C. Washington},
+	title ={Elliptic Curves. Number theory and cryptography},
+	edition ={2},
+	publisher ={Chapman \& Hall/CRC Press},
+	address ={United States of America},
+	year ={2008},
+}
+
+@book {silverman,
+	AUTHOR = {Silverman, Joseph H.},
+	TITLE = {The Arithmetic of Elliptic Curves},
+	PUBLISHER = {Springer},
+	SERIES   = {Graduate Texts in Mathematics},
+	VOLUME   = {106},
+	ADDRESS = {New York},
+	YEAR = {1994},
+}
+
+@book {seroussi,
+	AUTHOR = {Ian Blake and Gadiel Seroussi and Nigel Smart},
+	TITLE = {Elliptic Curves in Cryptography},
+	PUBLISHER = {Cambridge University Press},
+	SERIES   = {London Mathematical Society Lecture Note Series},
+	VOLUME   = {256},
+	ADDRESS = {Cambridge},
+	YEAR = {1999},
+}
+
+@article{formulae,
+	author  = {Daniel J. Bernstein and Tanja Lange}, 
+	title   = {Faster addition and doubling on elliptic curves},
+	journal = {Advances in cryptology—ASIACRYPT 2007, 13th international conference on the theory and application of cryptology and information security, Kuching, Malaysia, December 2–6, 2007, proceedings},
+	publisher = {Springer},
+	series = {Lecture Notes in Computer Science},
+	year    = 2007,
+	number  = 4833,
+	pages   = {29-50},
+	note    = {\url{http://cr.yp.to/newelliptic/newelliptic-20070906.pdf}},
+}
+
+@article{montgomery,
+	author = {L. Montgomery, Peter},
+	year = {1987},
+	month = {01},
+	pages = {243-243},
+	title = {Montgomery, P.L.: Speeding the Pollard and Elliptic Curve Methods of Factorization},
+	volume = {48},
+	journal = {Mathematics of Computation - Math. Comput.},
+	doi = {10.1090/S0025-5718-1987-0866113-7}
+}
+
+@Inproceedings{pinocchio,
+	author = {Parno, Bryan and Howell, Jon and Gentry, Craig and Raykova, Mariana},
+	title = {Pinocchio: Nearly Practical Verifiable Computation},
+	booktitle = {Proceedings of the IEEE Symposium on Security and Privacy},
+	year = {2013},
+	month = {May},
+	publisher = {IEEE},
+	url = {https://www.microsoft.com/en-us/research/publication/pinocchio-nearly-practical-verifiable-computation/},
+	edition = {Proceedings of the IEEE Symposium on Security and Privacy},
+	note = {Best Paper Award},
+}
+
+@misc{cryptoeprint:2016:260,
+	author = {Jens Groth},
+	title = {On the Size of Pairing-based Non-interactive Arguments},
+	howpublished = {Cryptology ePrint Archive, Report 2016/260},
+	year = {2016},
+	note = {\url{https://eprint.iacr.org/2016/260}},
+}
+
+@misc{timmy,
+	author = {Timmy Weerwag},
+	title = {Verifying an elliptic curve cryptographic algorithm
+	using Coq and the Ssreflect extension},
+	address = {Radboud University},
+	year = {2016},
+	note = {\url{https://www.ru.nl/publish/pages/813276/weerwag_timmy_-1a.pdf}},
+}
+
+@misc{eddsa,
+	title = {Edwards-Curve Digital Signature Algorithm (EdDSA)},
+	author = {S. Josefsson and I. Liusvaara},
+	series =	{Request for Comments},
+	number =	8032,
+	year = {January, 2017},
+	note = {\url{https://tools.ietf.org/html/8032}},
+}
+
+@misc{indist,
+	author = {Daniel J. Bernstein and Mike Hamburg and Anna Krasnova and Tanja Lange},
+	title = {Elligator: Elliptic-curve points indistinguishable from uniform random strings},
+	howpublished = {Cryptology ePrint Archive, Report 2013/325},
+	year = {2013},
+	note = {\url{https://eprint.iacr.org/2013/325}},
+}
+
+@misc{scaling,
+	author = {Huseyin Hisil and Kenneth Koon-Ho Wong and Gary Carter and Ed Dawson},
+	title = {Twisted Edwards Curves Revisited},
+	howpublished = {Cryptology ePrint Archive, Report 2008/522},
+	year = {2008},
+	note = {\url{https://eprint.iacr.org/2008/522}},
+}
